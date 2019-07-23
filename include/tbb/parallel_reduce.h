@@ -321,7 +321,7 @@ namespace internal {
         void operator()(Range& range) {
             my_value = my_real_body(range, std::move(my_value));
         }
-        void join( lambda_reduce_body& rhs ) {
+        void join( lambda_reduce_body& rhs ) { // It might be clearer if this took an rvalue reference.
             my_value = my_reduction(std::move(my_value), std::move(rhs.my_value));
         }
         Value result() const& {
