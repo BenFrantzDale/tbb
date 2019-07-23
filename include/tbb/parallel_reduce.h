@@ -319,13 +319,16 @@ namespace internal {
             , my_value(other.identity_element)
         { }
         void operator()(Range& range) {
-            my_value = my_real_body(range, const_cast<const Value&>(my_value));
+            my_value = my_real_body(range, std::move(my_value));
         }
         void join( lambda_reduce_body& rhs ) {
-            my_value = my_reduction(const_cast<const Value&>(my_value), const_cast<const Value&>(rhs.my_value));
+            my_value = my_reduction(std::move(my_value), std::move(rhs.my_value));
         }
-        Value result() const {
-            return my_value;
+        Value result() const& {
+            return my_value; // Can this return by const reference or are there race-condition issues?
+        }
+        Value result() && {
+	  return std::move(my_value);
         }
     };
 
